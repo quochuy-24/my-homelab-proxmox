@@ -1,6 +1,6 @@
 # My Full-Stack Infrastructure Homelab: A DevOps Journey
 
-![Homelab Architecture](DIAGRAMS/homelab-architecture.png)
+![Homelab Architecture](DIAGRAM/homelab-architecture.png)
 
 ## 👋 Introduction
 
