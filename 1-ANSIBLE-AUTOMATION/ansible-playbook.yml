@@ -1,0 +1,7 @@
+#example: 1-ANSIBLE-AUTOMATION/ansible-playbook.yml
+---
+- name: deploy nginx web server
+  hosts: webservers
+  become: true
+  roles:
+    - 00-deploy-nginx

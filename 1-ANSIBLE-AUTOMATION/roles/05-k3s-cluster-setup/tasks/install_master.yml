@@ -1,0 +1,22 @@
+---
+- name: check file k3s exist
+  stat:
+    path: /usr/local/bin/k3s
+  register: k3s_file_stat
+
+- name: install k3s if not exist
+  shell: "curl -sfL https://get.k3s.io | sh -s - --write-kubeconfig-mode 644"
+  when: not k3s_file_stat.stat.exists
+
+- name: ensure k3s service is running
+  systemd:
+    name: k3s
+    state: started
+    enabled: yes
+  when: k3s_file_stat.stat.exists
+
+- name: wait for k3s API server to be ready
+  wait_for:
+    path: /var/lib/rancher/k3s/server/node-token
+    timeout: 120
+  when: k3s_file_stat.stat.exists

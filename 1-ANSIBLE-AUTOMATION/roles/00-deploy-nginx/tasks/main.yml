@@ -1,0 +1,27 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for roles/nginx
+
+- name: install nginx and update cache
+  apt:
+    name: nginx
+    state: present
+    update_cache: yes
+
+- name: ensure service is running
+  service:
+    name: nginx
+    state: started
+    enabled: yes
+
+- name: adding dynamic content into file index.html of remoting node
+  template:
+    src: index.html.j2
+    dest: /var/www/html/index_tmp.htm
+
+- name: deploy nginx configuration form template
+  template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/sites-available/default
+  notify: Restart Nginx
+

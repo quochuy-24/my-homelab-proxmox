@@ -1,0 +1,4 @@
+#SPDX-License-Identifier: MIT-0
+---
+# vars file for roles/nginx
+document_root: /var/www/my_custome_folder

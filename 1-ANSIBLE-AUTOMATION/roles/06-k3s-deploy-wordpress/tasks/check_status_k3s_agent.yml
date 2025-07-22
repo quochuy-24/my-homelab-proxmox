@@ -1,0 +1,6 @@
+---
+- name: ensure k3s agent is running
+  service:
+    name: k3s-agent
+    state: started
+    enabled: true

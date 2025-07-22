@@ -1,0 +1,35 @@
+---
+- name: load varible file
+  include_vars:
+    file: vars/secret.yml
+
+- name: ensure k3s server is running
+  service:
+    name: k3s
+    state: started
+    enabled: true
+
+- name: create a directory
+  file:
+    path: "/home/{{ ansible_user }}/ansible-project/wordpress"
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: "0755"
+    recurse: yes
+
+- name: copy all yml file into wordpress directory
+  template:
+    src: "{{ item }}"
+    dest: "/home/{{ ansible_user }}/ansible-project/wordpress/{{ item | basename | regex_replace('\\.j2$','') }}"
+  loop:
+  - 01-namespace.yml.j2
+  - 02-mysql-secret.yml.j2
+  - 03-mysql-configmap.yml.j2
+  - 04-pvc.yml.j2
+  - 05-mysql-deployment.yml.j2
+  - 06-wordpress-deployment.yml.j2
+  - 07-ingress.yml.j2
+
+- name: execute
+  command: "kubectl apply -f /home/{{ ansible_user }}/ansible-project/wordpress/"

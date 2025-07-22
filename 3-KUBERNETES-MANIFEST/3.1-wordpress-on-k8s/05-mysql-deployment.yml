@@ -1,0 +1,49 @@
+#mysql service
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-service
+  namespace: "{{ app_namespace }}"
+spec:
+  selector:
+    app: mysql
+  ports:
+  - protocol: TCP
+    port: 3306
+---
+#mysql-deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-deployment
+  namespace: "{{ app_namespace }}"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+      - name: mysql-container
+        image: mysql:5.7
+        ports:
+        - containerPort: 3306
+        envFrom:
+        - secretRef:
+            name: mysql-secret
+        volumeMounts:
+        - mountPath: /var/lib/mysql
+          name: mysql-volume
+        - mountPath: /etc/mysql/conf.d
+          name: mysql-config-volume
+      volumes:
+      - name: mysql-volume
+        persistentVolumeClaim:
+          claimName: mysql-pvc
+      - name: mysql-config-volume
+        configMap:
+          name: mysql-config

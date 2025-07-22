@@ -1,0 +1,24 @@
+services:
+  prometheus:
+    image: prom/prometheus
+    container_name: prome
+    ports:
+      - 9090:9090
+    volumes:
+      - /home/{{ ansible_user }}/monitoring-stack/config/prometheus.yml:/etc/prometheus/prometheus.yml
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafa
+    ports:
+      - 3000:3000
+    volumes:
+      - grafana_data:/var/lib/grafana
+    restart: unless-stopped
+    depends_on:
+      - prometheus
+
+volumes:
+  grafana_data:
+

@@ -1,0 +1,50 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for docker
+- name: install prerequisites
+  apt:
+    name: "{{ prerequisites }}"
+    state: present
+    update_cache: yes
+
+- name: get docker gpg key
+  apt_key:
+    url: "{{ docker_gpg }}"
+    state: present
+
+- name: add docker repository
+  apt_repository:
+    repo: "{{ docker_repository }}"
+    state: present
+    filename: docker
+
+- name: install docker
+  apt:
+    name: "{{ docker_tools }}"
+    state: present
+    allow_downgrade: yes
+    update_cache: yes
+
+- name: ensure docker is running
+  service:
+    name: docker
+    state: started
+    enabled: yes
+
+- name: add user into docker groups
+  user:
+    name: "{{ ansible_user }}"
+    groups: docker
+    append: yes
+  notify:
+    - inform relogin
+
+- name: check docker version
+  command: docker --version
+  register: docker_version_output
+  changed_when: false
+
+- name: display docker version
+  debug:
+    msg: "docker version: {{ docker_version_output.stdout }}"
+

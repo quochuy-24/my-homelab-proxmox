@@ -1,0 +1,9 @@
+services:
+  phpadmin:
+    image: phpmyadmin
+    container_name: phpadmin
+    restart: always
+    ports:
+      - '8081:80'
+    environment:
+      - PMA_ARBITRAY=1

@@ -1,0 +1,41 @@
+# ===================================================================
+# Hardened SSH Configuration for Bastion Host
+#
+# This configuration is based on security best practices to create a
+# secure entry point into the homelab infrastructure.
+#
+# Key changes applied:
+#   1. Disabled root login.
+#   2. Disabled password-based authentication, enforcing key-only access.
+# ===================================================================
+
+# Use SSH protocol 2 only, which is more secure.
+Protocol 2
+
+# Disable direct login for the root user.
+# Administrators should log in with their own user and use 'sudo'.
+PermitRootLogin no
+
+# --- AUTHENTICATION ---
+# This is the most critical change. It disables all forms of password
+# authentication and forces the use of SSH public/private key pairs.
+PasswordAuthentication no
+ChallengeResponseAuthentication no
+
+# Ensure Public Key Authentication is enabled.
+PubkeyAuthentication yes
+
+# Location of the file containing authorized public keys for users.
+AuthorizedKeysFile      .ssh/authorized_keys
+
+# Do not allow users to log in with empty passwords.
+PermitEmptyPasswords no
+
+# --- SYSTEM SETTINGS ---
+# Disable X11 forwarding as it's not needed and reduces attack surface.
+X11Forwarding no
+
+# Optional: To further restrict access, you can specify exactly which
+# users or groups are allowed to connect via SSH.
+# Example:
+# AllowUsers bastion-host another-admin

@@ -1,0 +1,19 @@
+#SPDX-License-Identifier: MIT-0
+---
+# defaults file for docker
+prerequisites:
+  - curl
+  - gnupg
+  - ca-certificates
+  - lsb-release
+  - apt-transport-https
+docker_architecture: "{{ 'amd64' if ansible_architecture == 'x86_64' else ansible_architecture | default('amd64') }}"
+docker_gpg: "https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg"
+docker_repository: "deb [arch={{ docker_architecture }}] https://download.docker.com/linux/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} stable"
+docker_tools:
+  - docker-ce
+  - docker-ce-cli
+  - containerd.io
+  - docker-buildx-plugin
+  - docker-compose-plugin
+

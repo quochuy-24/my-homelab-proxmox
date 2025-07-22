@@ -1,0 +1,27 @@
+---
+# get information from master node
+- name: get ip address
+  set_fact:
+    master_ip: "{{ hostvars[groups['k3s_master'][0]]['ansible_host'] }}"
+  run_once: true
+
+- name: get token
+  slurp:
+    src: /var/lib/rancher/k3s/server/node-token
+  delegate_to: "{{ groups['k3s_master'][0] }}"
+  register: k3s_token_raw
+  run_once: true
+
+- name: share token
+  set_fact:
+    k3s_token: "{{ k3s_token_raw.content | b64decode | trim }}"
+  run_once: true
+
+- name: check if k3s exist
+  stat:
+    path: /usr/local/bin/k3s
+  register: k3s_file_stat
+
+- name: install k3s
+  shell: "curl -sfL https://get.k3s.io | K3S_URL='https://{{ master_ip }}:6443' K3S_TOKEN='{{ k3s_token }}' sh -"
+  when: not k3s_file_stat.stat.exists

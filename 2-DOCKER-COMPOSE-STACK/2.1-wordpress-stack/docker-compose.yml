@@ -1,0 +1,45 @@
+services:
+  wordpress:
+    image: wordpress
+    container_name: wordpress_app
+    restart: always
+    ports:
+      - "8080:80"
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: quochuy
+      WORDPRESS_DB_PASSWORD: 123
+      WORDPRESS_DB_NAME: wordpress_db
+    volumes:
+      - wp_data:/var/www/html
+    depends_on:
+      - db
+  db:
+    image: mysql:8.0
+    container_name: wordpress_mysql
+    restart: always
+    environment:
+      MYSQL_HOST: mysqldb
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: wordpress_db
+      MYSQL_USER: quochuy
+      MYSQL_PASSWORD: 123
+    volumes:
+      - db_data:/var/lib/mysql
+
+  phpadmin:
+    image: phpmyadmin
+    container_name: mysql_admin
+    restart: always
+    ports:
+      - 8081:80
+    environment:
+      PMA_HOST: db
+      PMA_USER: quochuy
+      PMA_PASSWORD: 123
+      PMA_ARBITRARY: 0
+    depends_on:
+      - db
+volumes:
+  db_data:
+  wp_data:

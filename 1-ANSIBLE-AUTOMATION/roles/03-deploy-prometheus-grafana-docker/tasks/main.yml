@@ -1,0 +1,37 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for monitoring
+- name: create prometheus and grafana docker-compose directory project
+  file:
+    path: "/home/{{ ansible_user }}/monitoring-stack"
+    state: directory
+    mode: "0755"
+
+- name: create directory to store prometheus.yml in project
+  file:
+    path: "/home/{{ ansible_user }}/monitoring-stack/config"
+    state: directory
+    mode: "0755"
+
+- name: create volumes to store grafana database
+  docker_volume:
+    name: grafana_data
+    state: present
+
+- name: copy prometheus.yml to remote host
+  template:
+    src: prometheus.yml.j2
+    dest: "/home/{{ ansible_user }}/monitoring-stack/config/prometheus.yml"
+
+- name: copy docker compose into directory
+  template:
+    src: docker-compose.yml.j2
+    dest: "/home/{{ ansible_user }}/monitoring-stack/docker-compose.yml"
+
+- name: run docker compose
+  community.docker.docker_compose_v2:
+    project_src: "/home/{{ ansible_user }}/monitoring-stack/"
+    state: present
+
+
+

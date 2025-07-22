@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-config
+  namespace: "{{ app_namespace }}"
+data:
+  my.cnf: |
+    {{ lookup('file', 'mysql-config/my.cnf.j2') | indent(8) }}

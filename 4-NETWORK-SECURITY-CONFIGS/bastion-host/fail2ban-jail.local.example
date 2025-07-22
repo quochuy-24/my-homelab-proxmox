@@ -1,0 +1,36 @@
+# ===================================================================
+# Example Fail2ban Custom Configuration (`jail.local`)
+#
+# Fail2ban was installed on the Bastion Host to automatically block
+# IPs that attempt brute-force attacks.
+#
+# To customize Fail2ban, create this file at /etc/fail2ban/jail.local
+# instead of editing the default jail.conf.
+# ===================================================================
+
+[DEFAULT]
+# This section defines default parameters for all jails.
+
+# Whitelist local and other trusted IPs to prevent accidental lockout.
+# ignoreip = 127.0.0.1/8 ::1 <your_home_public_ip>
+
+# Duration (in seconds) that an IP is banned. 1h = 1 hour.
+bantime = 1h
+
+# The time window (in seconds) during which failures are counted.
+findtime = 10m
+
+# The number of failed attempts before an IP is banned.
+maxretry = 3
+
+# --- SSHD Jail Configuration ---
+# This section enables and configures the jail specifically for the SSH service.
+
+[sshd]
+# Enable this jail.
+enabled = true
+
+# You can override default settings for this specific jail if needed.
+# For example, to be more strict with SSH:
+# maxretry = 3
+# bantime = 12h

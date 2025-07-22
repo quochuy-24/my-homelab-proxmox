@@ -1,0 +1,38 @@
+# =================================================================
+# PROJECT ANALYSIS: Exposing a Web Service to the Internet
+# =================================================================
+
+## SCENARIO OVERVIEW
+The primary objective was to securely expose a web server, running within an isolated DMZ network segment (10.10.20.0/24), to the public internet.
+
+---
+
+## ATTEMPT #1: Standard NAT Port Forwarding (The Traditional Method)
+
+### Action Taken:
+A Port Forwarding rule was configured on the OPNsense firewall to redirect incoming traffic from the WAN interface on TCP port 80 to the internal web server's IP (10.10.20.10) on port 80. An associated firewall rule on the WAN interface was automatically created to permit this traffic.
+
+### Result: FAILURE
+
+### Diagnosis & Root Cause Analysis:
+Initial troubleshooting pointed towards potential issues like lack of NAT reflection support on the home router. However, further investigation and testing from an external network confirmed the root cause: **the home ISP network operates behind Carrier-Grade NAT (CGNAT).**
+
+This means the public-facing IP address is shared among multiple customers, making it impossible for the ISP to route unsolicited incoming traffic to a specific end-user's firewall.
+
+### Conclusion:
+Standard Port Forwarding is a technically sound method but is **not viable** in this specific CGNAT environment. This diagnosis was critical in pivoting to a more modern solution.
+
+---
+
+## ATTEMPT #2: Outbound-Only Tunneling (The Modern Solution)
+
+### Action Taken:
+Leveraging Cloudflare Tunnel, an outbound-only connection was established from a dedicated `cloudflare-tunnel` container running within the secure LAN segment (10.10.10.0/24). This solution effectively bypasses the limitations of CGNAT.
+
+### Result: SUCCESS
+
+### Required Firewall Configuration:
+To enable this solution, a specific firewall rule was implemented on the OPNsense LAN interface to allow the `cloudflare-tunnel` container to communicate with the web server in the DMZ. (See `core-firewall-rules.txt` for details).
+
+### Key Takeaway:
+This exercise demonstrates the ability to not only configure network services but also to diagnose complex real-world connectivity issues (CGNAT) and implement modern, robust alternative solutions (Cloudflare Tunnel).

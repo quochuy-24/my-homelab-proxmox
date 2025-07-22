@@ -1,0 +1,44 @@
+services:
+  wordpress:
+    image: wordpress
+    container_name: wp
+    volumes:
+      - wp_data:/var/www/html
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    environment:
+      WORDPRESS_DB_HOST: mysql
+      WORDPRESS_DB_USER: "{{ mysql_user }}"
+      WORDPRESS_DB_PASSWORD: "{{ mysql_password }}"
+      WORDPRESS_DB_NAME: "{{ wordpress_database }}"
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:8.0
+    container_name: sql
+    restart: unless-stopped
+    volumes:
+      - db_data:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: "{{ wordpress_database }}"
+      MYSQL_USER: "{{ mysql_user }}"
+      MYSQL_PASSWORD: "{{ mysql_password }}"
+      MYSQL_ROOT_PASSWORD: "{{ mysql_root_password }}"
+
+  phpmyadmin:
+    image: phpmyadmin
+    container_name: db_admin
+    restart: unless-stopped
+    ports:
+      - "8081:80"
+    environment:
+      PMA_ARBITRARY: 0
+      PMA_HOST: mysql
+    depends_on:
+      - mysql
+
+volumes:
+  wp_data:
+  db_data:

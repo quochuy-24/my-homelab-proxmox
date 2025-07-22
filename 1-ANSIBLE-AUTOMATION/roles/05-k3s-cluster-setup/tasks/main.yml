@@ -1,0 +1,14 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for k3s-cluster
+- name: apt update
+  apt:
+    update_cache: yes
+
+- name: install k3s server
+  include_tasks: install_master.yml
+  when: inventory_hostname in groups['k3s_master']
+
+- name: install k3s agent
+  include_tasks: install_worker.yml
+  when: inventory_hostname in groups['k3s_workers']

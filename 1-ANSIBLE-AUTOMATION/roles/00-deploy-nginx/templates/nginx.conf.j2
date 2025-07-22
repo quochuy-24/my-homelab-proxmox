@@ -1,0 +1,13 @@
+server{
+	listen 80 default_server;
+	listen [::]:80 default_server;
+
+	root /var/www/html;
+	index index_tmp.htm index.html index.htm;
+
+	server_name {{ ansible_hostname }};
+
+	location / {
+		try_files $uri $uri/ =404;
+	}
+}

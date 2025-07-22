@@ -1,0 +1,19 @@
+[k3s_master]
+k3s-master ansible_host=<ip address of k3s master>
+
+[k3s_workers]
+k3s-worker-1 ansible_host=<ip address of k3s worker 1>
+
+[k3s_cluster:children]
+k3s_master
+k3s_workers
+
+[webservers]
+web-server-dmz ansible_host=<ip address of web server>
+
+[docker]
+docker-host ansible_host=<ip address of docker host>
+
+[all:vars]
+ansible_user=<your user>
+ansible_python_interpreter=/usr/bin/python3

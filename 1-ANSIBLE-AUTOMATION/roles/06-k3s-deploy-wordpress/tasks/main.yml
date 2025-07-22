@@ -1,0 +1,9 @@
+---
+- name: ensure k3s-agent is running
+  include_tasks: check_status_k3s_agent.yml
+  when: inventory_hostname in groups['k3s_workers']
+
+- name: deploy app k3s server
+  include_tasks: deploy-app-master.yml
+  when: inventory_hostname in groups['k3s_master']
+
