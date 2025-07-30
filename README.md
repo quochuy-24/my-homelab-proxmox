@@ -78,3 +78,16 @@ This phase moved from managing servers to managing applications using modern, cl
 The result of this journey is a robust, secure, and highly automated homelab environment. It's not just a collection of technologies, but a cohesive system where I can securely deploy, manage, and monitor applications from anywhere in the world, all managed through code.
 
 Thank you for visiting my portfolio. I am always learning and expanding this project.
+
+---
+🔧 Future Enhancements & Next Steps
+This project is a living portfolio and is continuously evolving. My next major goal is to implement a complete CI/CD pipeline.
+Phase 4: Implementing a Full CI/CD Pipeline (In Progress):
+Git Server: Deploying a self-hosted Gitea instance.
+CI/CD Engine: Integrating Drone CI to automate the entire workflow.
+The Goal: Achieve a "Code to Cluster" pipeline where a git push to Gitea automatically triggers Drone to:
+Run tests (linting, etc.).
+Build a new Docker image.
+Push the image to a private Docker Registry.
+Automatically update the corresponding Deployment on the Kubernetes cluster via a rolling update.
+➡️ Track the progress: 5-CICD-PIPELINE/
