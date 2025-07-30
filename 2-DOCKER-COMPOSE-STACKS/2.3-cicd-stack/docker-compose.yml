@@ -31,8 +31,8 @@ services:
     environment:
       # --- Cấu hình kết nối đến Gitea (dùng tên dịch vụ) ---
       - DRONE_GITEA_SERVER=http://192.168.1.105:3000
-      - DRONE_GITEA_CLIENT_ID=00a51054-c682-4959-8f05-1770c7874c6a
-      - DRONE_GITEA_CLIENT_SECRET=gto_czqar2kkbnggyhkgyu35uuqwzky5c4437rris4wrm43amxbenejq
+      - DRONE_GITEA_CLIENT_ID=<client-id-gitea>
+      - DRONE_GITEA_CLIENT_SECRET=<client-secret-gitea>
       # --- Cấu hình kết nối cho Runner ---
       - DRONE_RPC_SECRET=a_very_secret_drone_key
 
