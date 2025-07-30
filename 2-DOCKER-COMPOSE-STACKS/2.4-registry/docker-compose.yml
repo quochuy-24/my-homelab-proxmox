@@ -1,0 +1,32 @@
+services:
+  backend-registry:
+    image: registry:3
+    container_name: registry_container
+    restart: always
+    ports:
+    - "5000:5002"
+    environment:
+      # Địa chỉ lắng nghe bên trong container
+      - REGISTRY_HTTP_ADDR=0.0.0.0:5002
+      # Cho phép xóa image
+      - REGISTRY_STORAGE_DELETE_ENABLED=true
+      # Cấu hình CORS quan trọng nhất
+      - REGISTRY_HTTP_HEADERS_Access-Control-Allow-Origin=["http://192.168.1.105:8080"]
+    volumes:
+    - registry_data:/var/lib/registry
+
+  frontend-registry:
+    image: joxit/docker-registry-ui:latest
+    container_name: frontend_container
+    restart: always
+    ports:
+    - "8080:80"
+    environment:
+      # SỬA Ở ĐÂY: Dùng địa chỉ IP THỰC của máy chủ và port NGOÀI (5000)
+      - REGISTRY_URL=http://192.168.1.105:5000
+      - DELETE_IMAGES=true
+    depends_on:
+    - backend-registry
+
+volumes:
+  registry_data:

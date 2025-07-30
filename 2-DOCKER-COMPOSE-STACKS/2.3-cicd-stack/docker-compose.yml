@@ -1,0 +1,72 @@
+services:
+  gitea:
+    image: gitea/gitea:latest
+    container_name: gitea
+    restart: always
+    environment:
+      # --- Cấu hình Gitea ---
+      - USER_UID=1000
+      - USER_GID=1000
+      # Quan trọng: Nói cho Gitea biết tên miền chính thức của nó là gì
+      - GITEA__server__ROOT_URL=http://192.168.1.105:3000
+      - GITEA__webhook__ALLOWED_HOST_LIST=192.168.1.105
+    volumes:
+      - gitea_data:/data
+    ports:
+      - "3000:3000"
+      - "2222:22"
+    #networks:
+      #- cicd_net # <-- Thêm vào mạng tùy chỉnh
+
+  drone-server:
+    image: drone/drone:2
+    container_name: drone_server
+    restart: always
+    ports:
+      - "8000:80" # <-- Đổi port của host thành 8000 để không trùng với các dịch vụ khác
+    volumes:
+      - drone_data:/data
+    #extra_hosts:
+      #- "gitea.192-168-1-105.nip.io:host-gateway"
+    environment:
+      # --- Cấu hình kết nối đến Gitea (dùng tên dịch vụ) ---
+      - DRONE_GITEA_SERVER=http://192.168.1.105:3000
+      - DRONE_GITEA_CLIENT_ID=00a51054-c682-4959-8f05-1770c7874c6a
+      - DRONE_GITEA_CLIENT_SECRET=gto_czqar2kkbnggyhkgyu35uuqwzky5c4437rris4wrm43amxbenejq
+      # --- Cấu hình kết nối cho Runner ---
+      - DRONE_RPC_SECRET=a_very_secret_drone_key
+
+      # --- Cấu hình để thế giới bên ngoài truy cập Drone ---
+      - DRONE_SERVER_HOST=192.168.1.105:8000
+      - DRONE_SERVER_PROTO=http
+
+      # --- Cấu hình khác ---
+      #- DRONE_USER_CREATE=username:admin,admin:true # Tự động cấp quyền admin cho user Gitea của bạn
+      - DRONE_LOG_LEVEL=debug # Bật log debug để dễ gỡ lỗi
+#    networks:
+#      - cicd_net # <-- Thêm vào mạng tùy chỉnh
+
+  drone-runner-docker:
+    image: drone/drone-runner-docker:1
+    container_name: drone_runner
+    restart: always
+    depends_on:
+      - drone-server
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - DRONE_RPC_PROTO=http
+      - DRONE_RPC_HOST=drone-server # Runner kết nối đến server bằng tên dịch vụ
+      - DRONE_RPC_SECRET=a_very_secret_drone_key
+      - DRONE_RUNNER_CAPACITY=2
+      - DRONE_RUNNER_NAME=my-docker-runner
+#    networks:
+#      - cicd_net # <-- Thêm vào mạng tùy chỉnh
+
+# Định nghĩa các tài nguyên ở cấp cao nhất
+volumes:
+  gitea_data:
+  drone_data:
+
+#networks:
+#  cicd_net: # <-- Tạo một mạng tùy chỉnh
