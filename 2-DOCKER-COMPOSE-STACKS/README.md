@@ -51,5 +51,5 @@ This directory contains the Docker Compose configurations for various services r
   ```bash
   cd 2.1-wordpress-stack
   docker compose up -d
-  docker compose -f phpmyadmin.yml up -d
+  docker compose -f adminmyphp_compose.yml up -d
   ```
