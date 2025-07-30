@@ -1,12 +1,23 @@
 # My Full-Stack Infrastructure Homelab: A DevOps Journey
 
-![Homelab Architecture](DIAGRAM/homelab-architecture.png)
 
 ## 👋 Introduction
 
 Welcome to my personal homelab project! This repository documents my journey of building a complete, modern, and automated infrastructure from the ground up on a single physical server. What started as a learning exercise has evolved into a fully-functional, multi-layered environment that serves as a practical portfolio of my skills in DevOps, System Administration, Networking, and Security.
 
 This entire lab runs on **Proxmox VE** and is managed almost exclusively through **Infrastructure as Code (IaC)** principles, primarily using **Ansible**.
+
+## 1. Solution & Workflow Architecture
+
+This diagram illustrates the overall solution, the main components, and the key workflows for administration, CI/CD, and end-user access. It shows how various tools like Ansible, Docker, Gitea, Drone, and Kubernetes work together to deliver applications.
+
+![Solution Architecture Diagram](DIAGRAM/solution_diagram.png)
+
+## 2. Network Foundation & Security Architecture
+
+The entire homelab is built upon a secure, multi-layered network foundation managed by a virtualized OPNsense firewall. This architecture isolates different environments (e.g., Management, DMZ, Secure LAN) to enhance security and control traffic flow.
+
+![Network Architecture Diagram](DIAGRAM/homelab-architecture.png)
 
 ---
 
