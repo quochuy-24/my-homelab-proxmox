@@ -11,7 +11,7 @@ This entire lab runs on **Proxmox VE** and is managed almost exclusively through
 
 This diagram illustrates the overall solution, the main components, and the key workflows for administration, CI/CD, and end-user access. It shows how various tools like Ansible, Docker, Gitea, Drone, and Kubernetes work together to deliver applications.
 
-![Solution Architecture Diagram](DIAGRAM/solution_diagram.png)
+![Solution Architecture Diagram](DIAGRAM/workflow_diagram.png)
 
 ## 2. Network Foundation & Security Architecture
 
