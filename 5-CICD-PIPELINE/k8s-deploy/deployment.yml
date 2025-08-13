@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simple-dep
+  namespace: drone
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: simple-pod
+  template:
+    metadata:
+      labels:
+        app: simple-pod
+    spec:
+      imagePullSecrets:
+      - name: secret-registry
+      containers:
+      - name: simple-container
+        image: 192.168.1.105:5000/simple
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: simple-service
+  namespace: drone
+spec:
+  selector:
+    app: simple-pod
+  ports:
+  - protocol: TCP
+    port: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: simple-ingress
+  namespace: drone
+spec:
+  rules:
+  - host: local.website.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: simple-service
+            port:
+              number: 80

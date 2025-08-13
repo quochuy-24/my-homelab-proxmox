@@ -1,0 +1,45 @@
+kind: pipeline
+type: docker
+name: build-docker-image
+
+steps:
+  - name: check
+    image: node:18
+    commands:
+      - npm install -g htmlhint
+      - htmlhint app/index.html
+
+#  - name: test-nginx-config
+#    image: docker:dind
+
+  - name: build and publish
+    image: plugins/docker
+    settings:
+      insecure: true
+      repo: 192.168.1.105:5000/simple
+      registry: 192.168.1.105:5000
+      #username:
+        #from_secret: docker_username
+      #password:
+        #from_secret: docker_password
+      tags:
+        - "${DRONE_COMMIT_SHA:0:8}"
+        - latest
+
+# rolling update kubernetes when image has changed
+  - name: rolling update
+    image: lachlanevenson/k8s-kubectl
+    environemnt:
+      KUBECONFIG_CONTENT:
+        from_secret: kubeconfig_drone
+    commands:
+      - mkdir -p /root/.kube
+      - echo "KUBECONFIG_CONTENT" | base64 -d > /root/.kube/config
+      - chmod 600 /root/.kube/config
+      - sleep 5
+      - >
+        kubectl set image deployment/simple-dep
+        simple-container=192.168.1.105:5000/simple:${DRONE_COMMIT_SHA:0:8}
+        -n drone --record
+      - echo "checking rollout status..."
+      - kubectl rollout status deployment/simple-dep -n drone
