@@ -10,7 +10,7 @@ A complete, self-hosted CI/CD pipeline built on Proxmox. This project automates 
 
 This project uses a GitOps-like approach where Gitea is the source of truth.
 
-![Workflow Diagram](DIAGRAM/cicd_workflow.png)
+![Workflow Diagram](my-homelab-proxmox/DIAGRAM/cicd_workflow.png)
 
 1.  **Code Push:** A developer pushes code changes to a **Gitea** repository.
 2.  **Webhook Trigger:** Gitea sends a webhook to the **Drone CI** server.
